@@ -1,4 +1,5 @@
 import json
+import os
 
 def validar_email(email):
     return "@" in email
@@ -16,12 +17,14 @@ def salvar_usuarios(usuarios, nome_arquivo="usuarios.json"):
         json.dump(usuarios, arquivo, indent=4)
 
 def mostrar_dados(usuario):
+    os.system('cls' if os.name == 'nt' else 'clear') or None
     print(f'''\n
 ---------------------------
 Dados do Usuário
   Email: {usuario['email']}
   Seguidores: {usuario['seguidores']}
-  Pontos: {usuario['pontos']}\n''') 
+  Pontos: {usuario['pontos']}
+---------------------------''') 
 
 def cadastro():
     nome = input("Digite seu nome: ").capitalize()
@@ -53,6 +56,7 @@ def cadastro():
     mostrar_dados(novo_usuario)
 
 def atualizar_perfil(usuario):
+    os.system('cls' if os.name == 'nt' else 'clear') or None
     usuarios = carregar_usuarios()
 
     while True:
@@ -66,23 +70,29 @@ def atualizar_perfil(usuario):
         opcao = int(input('Escolha uma opção: '))
 
         if opcao == 1:
-          novo_nome = input("Nome: ")
+          os.system('cls' if os.name == 'nt' else 'clear') or None
+          novo_nome = input("Atualize o nome: ")
           usuario['nome'] = novo_nome.capitalize()
-          
-          break        
+          print("Nome atualizado com sucesso!")
+          return
+                
         elif opcao == 2:
+          os.system('cls' if os.name == 'nt' else 'clear') or None
           novo_seguidores = input("Seguidores: ")
           if novo_seguidores:
               try:
                 usuario['seguidores'] = int(novo_seguidores)
+                print("Seguidores atualizado com sucesso!")
                 
               except ValueError:
                   print("Por favor insira um número válido")
-          break
+          return
         elif opcao == 3:
+          os.system('cls' if os.name == 'nt' else 'clear') or None
           nova_senha = input("Nova senha: ")
           usuario['senha'] = nova_senha
-          break
+          print("Senha atualizado com sucesso!")
+          return
         elif opcao == 4:
             break
         else:
@@ -94,7 +104,7 @@ def atualizar_perfil(usuario):
             break
 
     salvar_usuarios(usuarios)
-    print("Perfil atualizado com sucesso!")
+    
 
 def encontrar_usuario(email, senha):
     usuarios = carregar_usuarios()
@@ -104,13 +114,15 @@ def encontrar_usuario(email, senha):
     return None
 
 def menu_usuario(usuario):
+    os.system('cls' if os.name == 'nt' else 'clear') or None
+    print(f"\nBem-vindo(a), {usuario['nome']}!")
     while True:
         print('''
 ===== Menu do Usuário =====
   1. Ver perfil
   2. Atualizar perfil
   3. Meus Fidelipoints
-  4. Logout
+  0. Logout
 ---------------------------''')
     
         opcao = input("Escolha uma opção: ")
@@ -120,20 +132,27 @@ def menu_usuario(usuario):
         elif opcao == "2":
             atualizar_perfil(usuario)
         elif opcao == "3":
-            print(f"Meus Fidelipoints: {usuario['pontos']}")
-        elif opcao == "4":
-            print("Logout realizado com sucesso.")
+            os.system('cls' if os.name == 'nt' else 'clear') or None
+            print(f'''
+-----------------------------
+Meus Fidelipoints: {usuario['pontos']}
+-----------------------------''')
+        elif opcao == "0":
+            os.system('cls' if os.name == 'nt' else 'clear') or None
+            print('''---------------------------------
+| Logout realizado com sucesso |
+---------------------------------''')
             break
         else:
             print("Opção inválida. Tente novamente.")
 
 
 def login():
-    email = input("\nEmail: ")
+    os.system('cls' if os.name == 'nt' else 'clear') or None
+    email = input("Email: ")
     senha = input("Senha: ")
     usuario = encontrar_usuario(email, senha)
     if usuario:
-        print(f"\nBem-vindo(a), {usuario['nome']}!")
         menu_usuario(usuario)
     else:
         print("\nEmail ou senha incorretos.")
@@ -157,7 +176,7 @@ def adicionar_usuario(nome, email, senha, seguidores, pontos=0):
 ####################
 
 usuarios = carregar_usuarios()
-
+os.system('cls' if os.name == 'nt' else 'clear') or None
 print('\n=====================================')
 print('Bem-vindo ao programa de Fidelipoints')
 
@@ -166,7 +185,7 @@ while True:
 Escolha a funcionalidade que deseja acessar:
   1. Login
   2. Cadastro
-  3. Sair do programa
+  0. Sair do programa
 =====================================''')
     
     try:
@@ -176,8 +195,11 @@ Escolha a funcionalidade que deseja acessar:
             login()
         elif escolha == 2:
             cadastro()  
-        elif escolha == 3:
-            print('Saindo do programa')
+        elif escolha == 0:
+            os.system('cls' if os.name == 'nt' else 'clear') or None
+            print('''---------------------------------
+|       Saindo do programa       |
+---------------------------------''')
             break
         else:
             print('Opção inválida. Por favor, escolha uma opção válida.')
