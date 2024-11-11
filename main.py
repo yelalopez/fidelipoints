@@ -3,7 +3,13 @@ import os
 from datetime import datetime
 
 def validar_email(email):
-    return "@" in email
+    pos_a = email.find('@')
+    servidor = email[pos_a:]
+
+    return pos_a != -1 and '.' in servidor
+
+def validar_conta(conta):
+    return "@" in conta
 
 def validar_seguidores(seguidores):
     try:
@@ -211,9 +217,19 @@ def publicar_postagem(usuario):
 
             if tipo_post == 1:
                 conta_marcada = input('Insira a conta : ')
+
+                while not validar_conta(conta_marcada):
+                    print('Conta não valida!')
+                    conta_marcada = input('Insira a conta : ')
+
                 registar_postagem(usuario, 'story', conta_marcada)
             elif tipo_post == 2:
                 conta_marcada = input('Insira a conta : ')
+
+                while not validar_conta(conta_marcada):
+                    print('Conta não valida!')
+                    conta_marcada = input('Insira a conta : ')
+
                 registar_postagem(usuario, 'feed', conta_marcada)
             elif tipo_post == 3:
                 menu_usuario(usuario)
@@ -222,7 +238,6 @@ def publicar_postagem(usuario):
                 print('Opcão inválida. Tente novamente.')
         except ValueError:
             print('Entrada inválida. Por favor intente novamente')
-
 
 def menu_perfil(usuario):
     os.system('cls' if os.name == 'nt' else 'clear') or None
