@@ -1,6 +1,18 @@
 import json
 import os
+import string
+import random
 from datetime import datetime
+
+CATALO_RECOMPENSAS = [
+    {'id': 1, 'descricao': 'Voucher de R$10', 'pontos': 1500},
+    {'id': 2, 'descricao': 'Voucher de R$15', 'pontos': 2250},
+    {'id': 3, 'descricao': 'Voucher de R$20', 'pontos': 3000},
+    {'id': 4, 'descricao': 'Desconto de 10%', 'pontos': 3500},
+    {'id': 5, 'descricao': 'Brinde exclusivo', 'pontos': 5000}
+]
+def random_generator(size=20, chars=string.ascii_uppercase + string.digits):
+ return ''.join(random.choice(chars) for _ in range(size))
 
 def validar_email(email):
     pos_a = email.find('@')
@@ -67,7 +79,7 @@ def deletar_usuario(usuario):
 
 def cadastro():
     nome = input("Digite seu nome: ").title()
-    email = input("Digite seu email: ")
+    email = input("Digite seu email: ").lower()
     
     while not validar_email(email):
         print("Email inválido. Por favor, insira um email válido.")
@@ -114,7 +126,7 @@ def atualizar_perfil(usuario):
         if opcao == 1:
           os.system('cls' if os.name == 'nt' else 'clear') or None
           novo_nome = input("Atualize o nome: ")
-          usuario['nome'] = novo_nome.tittle()
+          usuario['nome'] = novo_nome.title()
           print("\nNome atualizado com sucesso!")
           return
                 
@@ -232,18 +244,115 @@ def publicar_postagem(usuario):
 
                 registar_postagem(usuario, 'feed', conta_marcada)
             elif tipo_post == 3:
-                menu_usuario(usuario)
-                break
+                os.system('cls' if os.name == 'nt' else 'clear') or None
+                return
             else:
                 print('Opcão inválida. Tente novamente.')
         except ValueError:
             print('Entrada inválida. Por favor intente novamente')
 
+def resgatar_fidelipoints(usuario):
+
+    print(f'''
+===== Resgatar Fideliponts ===== 
+
+---------------------------------
+Você possui: {usuario['pontos']} Fidelipoints
+---------------------------------
+
+Catálogo de recompensas disponíveis: \n''')
+
+    recompensas_disponiveis = []
+    codigo_voucher = random_generator()
+
+    for recompensa in CATALO_RECOMPENSAS:
+        if usuario['pontos'] >= recompensa['pontos']:
+            print(f'{recompensa['id']}. {recompensa['descricao']} - {recompensa['pontos']} pontos')
+            recompensas_disponiveis.append(recompensa)
+
+    if not recompensas_disponiveis:
+        print('Você não possui pontos suficientes para resgatar recompensas no momento')
+        return
+    
+    try:
+        opcao = int(input("\nDigite o número da recompensa que deseja resgatar ou 0 para voltar: "))
+        if opcao == 0:
+            return
+        
+        recompensa_selecionada = next((r for r in recompensas_disponiveis if r['id'] == opcao), None)
+
+        if recompensa_selecionada:
+            usuario['pontos'] -= recompensa_selecionada['pontos']
+
+            nova_recompensa = {
+                "recompensa" : recompensa_selecionada,
+                "voucher" : codigo_voucher,
+                "data" : datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            }
+
+            if 'historico_resgates' not in usuario:
+                usuario['historico_resgates'] = []
+            usuario['historico_resgates'].append(nova_recompensa)
+
+
+            usuarios = carregar_usuarios()
+            for u in usuarios:
+                if u['email'] == usuario['email']:
+                    u.update(usuario)
+                    break
+            salvar_usuarios(usuarios)
+            
+            os.system('cls' if os.name == 'nt' else 'clear') or None
+            print(f'''Parabéns! Você resgatou: {recompensa_selecionada['descricao']}
+
+Apresente o seguinte codigo na sua próxima compra
+                  
+            ----------------------
+            | {codigo_voucher} |
+            ----------------------''')
+            print("\n_______________________________________ ")
+            print(f"\nPontos restantes: {usuario['pontos']}")
+        else:
+            print("Recompensa inválida. Tente novamente.")
+            return
+    except ValueError:
+        print("Entrada inválida. Por favor, escolha uma recompensa válida.")
+
+def menu_fidelipoints(usuario):
+    print(f'''
+-----------------------------
+Meus Fidelipoints: {usuario['pontos']}
+-----------------------------''')
+    while True:
+        print('''
+===== Meus Fideliponts =====             
+1. Quero resgatar!
+2. Quero acumular mais!
+3. Voltar ao menu principal           
+''')
+        opcao = input("Escolha uma opção: ")
+        try:
+            if opcao == "1":
+                os.system('cls' if os.name == 'nt' else 'clear') or None
+                resgatar_fidelipoints(usuario)
+                return
+            elif opcao == "2":
+                os.system('cls' if os.name == 'nt' else 'clear') or None
+                publicar_postagem(usuario)
+                return
+            elif opcao == "3":
+                os.system('cls' if os.name == 'nt' else 'clear') or None
+                return
+            else:
+                print("Opção inválida. Tente novamente.")
+        except ValueError:
+            print("Opção inválida. Tente novamente.")
+
 def menu_perfil(usuario):
     os.system('cls' if os.name == 'nt' else 'clear') or None
     while True:
         print('''
-===== Menu do Usuário =====
+===== Perfil =====
   1. Ver perfil
   2. Atualizar perfil
   3. Deletar perfil           
@@ -251,8 +360,10 @@ def menu_perfil(usuario):
 ---------------------------''')
         opcao = input("Escolha uma opção: ")
         if opcao == "1":
+            os.system('cls' if os.name == 'nt' else 'clear') or None
             mostrar_dados(usuario)
         elif opcao == "2":
+            os.system('cls' if os.name == 'nt' else 'clear') or None
             atualizar_perfil(usuario)
         elif opcao == "3":
             os.system('cls' if os.name == 'nt' else 'clear') or None
@@ -284,10 +395,7 @@ def menu_usuario(usuario):
             menu_perfil(usuario)
         elif opcao == "2":
             os.system('cls' if os.name == 'nt' else 'clear') or None
-            print(f'''
------------------------------
-Meus Fidelipoints: {usuario['pontos']}
------------------------------''')
+            menu_fidelipoints(usuario)
         elif opcao == "3":
             os.system('cls' if os.name == 'nt' else 'clear') or None
             publicar_postagem(usuario)
@@ -297,7 +405,7 @@ Meus Fidelipoints: {usuario['pontos']}
             print('''---------------------------------
 | Logout realizado com sucesso |
 ---------------------------------''')
-            break
+            return
         else:
             os.system('cls' if os.name == 'nt' else 'clear') or None
             print("Opção inválida. Tente novamente.")
