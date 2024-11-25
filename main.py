@@ -228,24 +228,24 @@ def publicar_postagem(usuario):
             tipo_post = int(input("Escolha uma opção: "))
 
             if tipo_post == 1:
-                conta_marcada = input('Insira a conta : ')
+                conta_marcada = input('Insira o @ da conta : ')
 
                 while not validar_conta(conta_marcada):
                     print('Conta não valida!')
-                    conta_marcada = input('Insira a conta : ')
+                    conta_marcada = input('Insira o @ da conta : ')
 
                 registar_postagem(usuario, 'story', conta_marcada)
             elif tipo_post == 2:
-                conta_marcada = input('Insira a conta : ')
+                conta_marcada = input('Insira o @ da conta : ')
 
                 while not validar_conta(conta_marcada):
                     print('Conta não valida!')
-                    conta_marcada = input('Insira a conta : ')
+                    conta_marcada = input('Insira o @ da conta : ')
 
                 registar_postagem(usuario, 'feed', conta_marcada)
             elif tipo_post == 3:
                 os.system('cls' if os.name == 'nt' else 'clear') or None
-                return
+                break
             else:
                 print('Opcão inválida. Tente novamente.')
         except ValueError:
@@ -267,7 +267,7 @@ Catálogo de recompensas disponíveis: \n''')
 
     for recompensa in CATALO_RECOMPENSAS:
         if usuario['pontos'] >= recompensa['pontos']:
-            print(f'{recompensa['id']}. {recompensa['descricao']} - {recompensa['pontos']} pontos')
+            print(f"{recompensa['id']}. {recompensa['descricao']} - {recompensa['pontos']} pontos")
             recompensas_disponiveis.append(recompensa)
 
     if not recompensas_disponiveis:
