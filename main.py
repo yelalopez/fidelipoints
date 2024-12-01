@@ -399,7 +399,7 @@ def menu_usuario(usuario):
         elif opcao == "3":
             os.system('cls' if os.name == 'nt' else 'clear') or None
             publicar_postagem(usuario)
-            break
+            
         elif opcao == "0":
             os.system('cls' if os.name == 'nt' else 'clear') or None
             print('''---------------------------------
