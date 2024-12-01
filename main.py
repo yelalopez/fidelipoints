@@ -4,7 +4,7 @@ import string
 import random
 from datetime import datetime
 
-CATALO_RECOMPENSAS = [
+CATALOGO_RECOMPENSAS = [
     {'id': 1, 'descricao': 'Voucher de R$10', 'pontos': 1500},
     {'id': 2, 'descricao': 'Voucher de R$15', 'pontos': 2250},
     {'id': 3, 'descricao': 'Voucher de R$20', 'pontos': 3000},
@@ -265,7 +265,7 @@ Catálogo de recompensas disponíveis: \n''')
     recompensas_disponiveis = []
     codigo_voucher = random_generator()
 
-    for recompensa in CATALO_RECOMPENSAS:
+    for recompensa in CATALOGO_RECOMPENSAS:
         if usuario['pontos'] >= recompensa['pontos']:
             print(f"{recompensa['id']}. {recompensa['descricao']} - {recompensa['pontos']} pontos")
             recompensas_disponiveis.append(recompensa)
